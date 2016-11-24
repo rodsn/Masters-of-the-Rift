@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<none id="windowID">about</none>
+		<meta charset="UTF-8">
+		<title>Masters Of The Rift - Riot Games API Challenge</title>
+		<meta name="viewport" content="width=device-width, height=device-height,  initial-scale=0, user-scalable=no, user-scalable=0"/>
+
+		<link rel="icon" type="image/png" href="img/favicon.png">
+		<link rel="stylesheet" href="../css/bootstrap.css">
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="../css/odometer.css" />
+		<link rel="stylesheet" href="../css/anicollection.css">
+
+		<link href='https://fonts.googleapis.com/css?family=Bitter' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Cinzel' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Lora' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Josefin+Slab:300' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Cinzel+Decorative:400,700' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Martel:300,200' rel='stylesheet' type='text/css'>
+	</head>
+
+	<body id="head" style="overflow: visible;">
+
+		<a href="../">
+			<div class="back_btn">
+				<span class="glyphicon glyphicon-chevron-left innerChev"></span>
+			</div>
+		</a>
+
+		<center>
+
+			<h1 data-anijs="if: DOMContentLoaded, on: window, do: fadeInDown animated" style="padding-top: 100px; padding-bottom: 10px;">Masters of the Rift</h1>
+
+
+			<hr style="width: 700px; padding: 10px;">
+
+			<div class="text-box" data-anijs="if: DOMContentLoaded, on: window, do: fadeInUp animated">
+		   		<h2>About</h2>
+				<b>Masters of the rift</b> is a web app that uses the Riot API to get data from the Riot servers. It's part of the <a href="https://developer.riotgames.com/discussion/announcements/show/eoq3tZd1">Riot API Challenge - 2016</a>. This year's theme is Champion Mastery. I decided to get a simple and clean website to display the info on the player Champion Mastery data. It was tricky to get something different than just "you have 159 points. yay..", i wanted something more impressive. The website makes use of Javascript and PHP to send the requests to the servers, if you wish to find more about the code read the <b>Documentation</b> topic below. You can try the web app <a href="http://masters-of-the-rift.com">here</a>. Also make sure to check the <a href="../disclaimer">disclaimer</a> page.<br><br>
+
+				<h2>Documentation</h2>
+				You may love to see how stuff works without even knowing how to code. Or you may also be a programmer yourself. Either way you came to the right place, i will explain how the website works from the HTML to the PHP.<br><br>
+				<h4>HTML</h4>
+				<hr style="margin: 0px; margin-bottom: 10px;">
+				The html part is easy and does not really need anything but this:
+				<br>
+				<pre>&lt;h1 id=&quot;champName&quot;&gt;placeholder&lt;/h1&gt;</pre>
+				The id is what makes Javascript able to access the data on that element (h1 in this case);
+				The "placeholder" is a temporary value given to that element.<br><br><br>
+
+				<h4>Javascript</h4>
+				<hr style="margin: 0px; margin-bottom: 10px;">
+				Now the core of the whole app is JS. I use it to change the placeholders to the downloaded data.
+				<br>
+				<pre>
+function getScore(id) {
+
+  	function logic(score) {
+  		score = JSON.parse(score); // Need to convert the raw data into an object (Actually this request returns a simple string, but the others return a JSON table)
+  		setAll(totalMastery, "innerHTML", score); // I will explain this more ahead
+  	}
+
+  	$.ajax({
+  		type: "GET",
+  		url: "php/request.php", // The php file that handles the requests
+  		data:  {mode: "getScore", id: id, region_flat: regions[rg].flat, region_num: regions[rg].num},
+  		success: function(data){
+  			logic(data); // When the php returns the data, run the logic function
+  		}
+   	});
+}
+				</pre>
+
+				So basically i have a function that does the request, and when the request is successful it runs another function. Check the comments on the code above for more info.
+
+				<pre>
+function setAll(obj, key, value) {
+  	if ( obj.length > 1 ) { // If the object has more than one entry then
+		for (var i = obj.length - 1; i >= 0; i--) { // Iterate through the object
+			obj[i][key] = value; // Set the object number.key to the given value
+		};
+	} else {
+		obj[key] = value;
+	}
+}
+				</pre>
+
+				Now this function above was a funny way i created to give all the HTML elements variables. if i set the object to <code>champName</code>, the key to "innerHTML" and the value to "Teemo" then ALL of the HTML elements with an ID of <code>champName</code> will have their inner HTML value changed to "Teemo".<br><br>
+
+				The only thing that complicated this process was the fact that the Champion Mastery API region parameter is different from the rest of the API.
+				For example to select EUW i would just place "euw" on the parameters, but the Champion mastery API needs to be "EUW1" instead. I don't really know why, but i had to deal with it. (Rito pls) The way i found around this was ok, but i could have done something more organized. Here is what i did:<br><br>
+				Using EUW as example.<br><br>
+
+				1. Set a <code>region</code> variable to "euw"<br>
+				2. Made this table:<br>
+				<pre>
+regions = {
+	br: {flat:"br", num:"br1"},
+	eune: {flat:"eune", num:"eun1"},
+	euw: {flat:"euw", num:"euw1"},
+	jp: {flat:"jp", num:"jp1"},
+	kr: {flat:"kr", num:"kr"},
+	lan: {flat:"lan", num:"la1"},
+	las: {flat:"las", num:"la2"},
+	na: {flat:"na", num:"na1"},
+	oce: {flat:"oce", num:"oc1"},
+	ru: {flat:"ru", num:"ru"},
+	tr: {flat:"tr", num:"tr1"},
+
+};
+				</pre>
+				3. Sent <code>regions[region].flat</code> and <code>regions[region].num</code> to the PHP<br>
+				4. Used the flat version or the num version depending on the API category.<br><br>
+
+				<h4>PHP</h4>
+				<hr style="margin: 0px; margin-bottom: 10px;">
+				The PHP just gets the content from the API url. Pretty simple. The key is set in a separate file called <code>var.php</code> If you wish to see the app working and tweak with it in your own machine then:<br><br>
+				1. Install apache or another server software.<br>
+				2. Download the repository.<br>
+				3. Create a file in the php folder and name it <code>var.php</code><br>
+				4. Place this in that file and edit the variable to your key:<br>
+				<pre>
+&lt;?php
+      $api_key = &quot;your_key_here&quot;;
+?&gt;
+				</pre>
+				5. Open the browser on localhost and the port number configured by the apache server, and you should see the app.<br><br>
+
+				You may also just create a variable in the <code>request.php</code> file called <code>$api_key</code>.<br><br>
+
+				<h2>My widget</h2>
+				I also made a simple widget that displays for how long you haven't played with a champion. It's so easy to use. You simply place the following code into your html page:
+				<pre>&lt;iframe src=&quot;http://www.masters-of-the-rift.com/last_played/?search=NAME&amp;region=REGION&amp;champ=CHAMPION&quot;&gt;&lt;/iframe&gt;</pre>
+
+				In the <code>search</code> field you place the summoner name.<br>
+				In the <code>region</code> field you place the region that summoner is in.<br>
+				And in the <code>champ</code> field you place the champion.<br><br>
+
+				It will display a counter that you are free to use on your website. (Actually i do encourage you to use it and make something cool!)<br><br>
+
+				That's pretty much it, the basics are set and explained. Of course you can ask me anything about the project.<br><br>
+
+				<img style="width: 50px;" src="http://vignette3.wikia.nocookie.net/leagueoflegends/images/7/71/Get_Excited%21.png"> Got excited? Head up to the <a href="https://developer.riotgames.com/">Riot API forums</a>, learn about the API and start your own project!<br><br>
+
+				GL & HF, <br><br>
+				Le RoD
+
+
+			</div>
+
+
+	   		<br><br>
+
+
+
+		</center>
+
+
+
+		<footer>
+			<none class="foot_item"><a id="jump-up" data-scroll href="#head"><span class="glyphicon glyphicon-chevron-up innerChev"></span></a></none><none class="foot_item"><a href="/">Masters of the Rift</a></none> <none class="foot_item"><a href="../about">About</a></none> <none class="foot_item"><a href="../disclaimer">Disclaimer</a></none> <none class="foot_item"><a href="https://github.com/rodsn/Masters-of-the-Rift">Github</a></none>
+			<br><br>
+			<p style="font-size: 10px">Masters Of The Rift isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends.<br> League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.</p>
+		</footer>
+
+
+
+		<script src="../js/request.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/smooth-scroll.js"></script>
+		<script src="../js/bootstrap.js"></script>
+		<script src="../js/parallax.js"></script>
+		<script src="../js/smooth.js"></script>
+		<script src="../js/index.js"></script>
+		<script src="../js/anijs/anijs.js"></script>
+    		<script src="../js/anijs/helpers/scrollreveal/anijs-helper-scrollreveal.js"></script>
+    		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="http://github.hubspot.com/odometer/odometer.js"></script>
+
+	</body>
+
+</html>

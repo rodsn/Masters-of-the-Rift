@@ -1,0 +1,28 @@
+MASTERS OF THE RIFT:
+
+  IDEAS:
+    ✔ decorate champion image; @done (16-04-30 04:54)
+    ✔ Make counter from last time played; @done (16-05-02 20:09)
+    ✔ Transitions on champion search; @done (16-05-03 05:24)
+
+
+  TASKS:
+    ✔ change first bg image to summoners rift; @done (16-04-30 04:54)
+    ✔ Initial header size irregular, check that; @done (16-04-30 04:54)
+    ✔ Make regions selectable; @done (16-04-30 04:54)
+    ✔ Make links to other pages @done (16-05-03 05:24)
+    ✔ Summoner not found; @done (16-05-03 00:15)
+    ✔ Champion not found; @done (16-05-03 00:15)
+    ☐ Remove div id in URL after smooth scroll
+    ☐ 
+
+
+
+  BEFORE ENTERING:
+    ☐ BODY = HIDDEN;
+    ✔ PULL TOP ON ENTER; @done (16-05-03 05:24)
+    ✔ DOCUMENTATION; @done (16-05-03 05:24)
+    ✔ CREDITS; @done (16-05-03 05:24)
+
+//CHECK: https://github.com/thoughtbot/guides/tree/master/best-practices
+         https://github.com/thoughtbot/guides/tree/master/style

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<none id="windowID">main</none>
+		<meta charset="UTF-8">
+		<title>Masters Of The Rift - Riot Games API Challenge</title>
+		<meta name="viewport" content="width=device-width, height=device-height,  initial-scale=0, user-scalable=no, user-scalable=0"/>
+
+		<meta name="og:url" content="http://www.masters-of-the-rift.com/"/>
+		<meta property="og:type" content="website"/>
+		<meta property="og:title" content="Masters Of The Rift">
+		<meta property="og:description" content="See your mastery stats with your favourite champion!"/>
+		<meta property="og:image" content="http://www.masters-of-the-rift.com/img/logo.png"/>
+
+		<link rel="shortcut icon" href="img/favicon.ico" />
+		<link rel="stylesheet" href="css/bootstrap.css">
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/odometer.css" />
+		<link rel="stylesheet" href="css/anicollection.css">
+
+		<link href='https://fonts.googleapis.com/css?family=Bitter' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Cinzel' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Lora' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Josefin+Slab:300' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Cinzel+Decorative:400,700' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Martel:300,200' rel='stylesheet' type='text/css'>
+
+		<script src="js/Chart.bundle.js"></script>
+	</head>
+
+	<body style="overflow: hidden;">
+		<center>
+			<div id="main-container">
+
+				<div id="header" data-anijs="if: DOMContentLoaded, on: window, do: fadeInDown animated" style="padding-top: 50px;" class="parallax-11">
+					<h1 class="intro">masters</h1>
+					<h2 style="margin: 0px; line-height: 5%; margin-top: 5px;">Of The</h2>
+					<h1 class="intro">rift</h1>
+				</div>
+
+				<div class="parallax-04">
+
+					<div class="wrapper" style="width: 400px;">
+						<div class="total-mastery" data-anijs="if: DOMContentLoaded, on: window, do: fadeInDown animated">
+							<div id="totalMastery" class="odometer">0</div>
+						</div>
+
+						<div class="tooltip" style="height: 60px; margin-bottom: 30px;">
+				    			This number is the total Champion Mastery Points, enter your summoner name bellow to see yours
+				    		</div>
+					</div>
+				</div>
+
+				<div data-anijs="if: DOMContentLoaded, on: window, do: fadeInDown animated" style="display: inline-block;">
+					<div style="float: left;">
+						<input type="text" id="summoner" placeholder="Summoner name" autocomplete="on" autofocus>
+					</div>
+					<div style="float: left;">
+						<select id="regionSelector" onmouseleave="style_mouseleave(this)" style="border-left: none;">
+							<option value="br" selected>BR</option>
+							<option value="eune">EUNE</option>
+							<option value="euw">EUW</option>
+							<option value="jp">JP</option>
+							<option value="kr">KR</option>
+							<option value="lan">LAN</option>
+							<option value="las">LAS</option>
+							<option value="na">NA</option>
+							<option value="oce">OCE</option>
+							<option value="ru">RU</option>
+							<option value="tr">TR</option>
+						</select>
+					</div>
+				</div>
+
+				<p id="error_name" style="display: none"></p>
+
+				<p id="scrolldowntip" class="scroll-down"><span class="glyphicon glyphicon-chevron-down" style="float: right; margin-top: -100px; margin-right: 150px;"></span></p>
+
+			</div>
+
+  			<div id="welcome" class="parallax-container" data-parallax="scroll" data-image-src="img/img3.png" style="-webkit-filter: grayscale(95%) contrast(40%) brightness(40%);"></div>
+
+			<div style="margin-top: -600px;">
+				<h1 class="fade" data-anijs="if: scroll, on: window, do: fadeIn animatedSLOW, after: makeVisible" style="opacity: 0;">Greetings, <n id="summonerName">Summoner</n>!</h1>
+				<img id="icon" src="http://ddragon.leagueoflegends.com/cdn/6.8.1/img/profileicon/1.png" data-anijs="if: scroll, on: window, do: fadeIn animatedSLOW, before: scrollReveal, after: makeVisible" style="opacity: 0; margin-top: 100px; margin-bottom: 100px; -webkit-filter: drop-shadow(0 0 73px #CBB046);" class="img-circle"/>
+			</div>
+
+  			<div class="container" style="padding: 20%; padding-top: 0%; padding-bottom: 0%">
+  				<h2 data-anijs="if: scroll, on: window, do: fadeIn animatedSLOW, before: scrollReveal, after: makeVisible" style="margin-top: 100px; opacity: 0">Some global data</h2>
+  				<div class="info" data-anijs="if: scroll, on: window, do: fadeIn animatedSLOW, before: scrollReveal, after: makeVisible" style="opacity: 0;">
+  					<p class="text-box" style="width: 80%; text-align: center; padding-top: 50px;">Check here some of your data with all the champions. Hover over the values to see the info.</p>
+	  				<div class="wrapper" style="width: 400px; padding: 0; margin-top: 150px;">
+						<h1 id="totalPoints" style="position: relative;margin-top: -75px;margin-bottom: 50px;">0</h1>
+						<div class="tooltip" style="height: 60px; margin-bottom: 30px;">
+				    			This is your total Mastery Points on all champions combined.
+				    		</div>
+				    	</div>
+
+				    	<div class="wrapper" style="width: 400px; padding: 0; margin-top: 100px;">
+						<h1 id="gradeAVG">N/A</h1>
+						<div class="tooltip" style="height: 40px; margin-bottom: 30px;">
+				    			This is your average grade with all the champions.
+				    		</div>
+				    	</div>
+
+				    	<h2 style="margin-top: 100px;">Champion levels</h2>
+				       <hr style="margin-top: 15px;">
+					<div class="wrapper" style="width: 400px;">
+					     	<div id="canvas-holder" style="z-index: 200; position: relative;">
+					       	<canvas id="chart-area" width="400" height="400" />
+					    	</div>
+						<div class="tooltip">
+							This is your total champions with mastery data. You have <none id="champsPlayed">0</none> champions with mastery data.
+						</div>
+					</div>
+			    	</div>
+			</div>
+			
+			<div class="container" style="padding: 20%; padding-top: 0%; padding-bottom: 0%;">   	 	
+  				<h2 data-anijs="if: scroll, on: window, do: fadeIn animatedSLOW, before: scrollReveal, after: makeVisible" style="margin-top: 100px; opacity: 0">Your top Champion</h2>
+  				<div class="info" data-anijs="if: scroll, on: window, do: fadeIn animatedSLOW, before: scrollReveal, after: makeVisible" style="opacity: 0;">
+					<img id="champImage" src="http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Aatrox_0.jpg" style="width: 100%" class="filter_0"/>
+					<hr style="position: relative; width: 100%; margin: 0px;">
+					<div class="shadow" style="height: 90px;margin-top: -90px; position: relative; border: solid transparent 1px; border-top: none"></div>
+					<div class="wrapper" style="width: 400px;">
+						<h1 id="champ1_mastery" style="position: relative;margin-top: -75px;margin-bottom: 50px;">0</h1>
+						<div class="tooltip" style="height: 60px; margin-bottom: 30px;">
+				    			This is your Mastery Score with <none id="champName">ChampName</none>.<br>Very good stuff! GJ!
+				    		</div>
+				    	</div>
+
+					<h2 id="champName" style="margin: 20px; margin-bottom: -7px;">ChampName</h2>
+					<hr>
+					<p id="lore" class="text-box" style="width: 80%">N/A</p>
+					<div class="wrapper" style="width: 400px;">
+						<div id="pie_container" style="margin-top: 100px;">
+							<div id="champPercentage_pie" class="pie" data-size="100" data-value="0"></div>
+						</div>
+						<div class="tooltip" style="height: 100px; margin-bottom: 30px;">
+				    			<none id="champName">champName</none> alone makes <none id="champPercentage">0</none>% of your total Mastery Points. That means that out of the <b id="totalPoints">0</b> points you have in total (all champion points added), <none id="champPercentage">0</none>% are on <none id="champName">champName</none> alone.
+				    		</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container" style="padding: 20%; padding-top: 0%; padding-bottom: 0%;">   	 	
+				<h2 data-anijs="if: scroll, on: window, do: fadeIn animatedSLOW, before: scrollReveal, after: makeVisible" style="opacity: 0">Search</h2>
+				<div class="info" data-anijs="if: scroll, on: window, do: fadeIn animatedSLOW, before: scrollReveal, after: makeVisible" style="opacity: 0;">
+					<p class="text-box" style="width: 80%; text-align: center; padding-top: 50px;">You may also search here your stats for a specific champion.</p>
+					<div class="overInfo">
+						<img id="champImageLoading_search" src="http://ddragon.leagueoflegends.com/cdn/img/champion/loading/Aatrox_0.jpg" style="width: 100%;" class="filter_0">
+					</div>
+
+					<input type="text" id="champinp" placeholder="Champion name" autocomplete="off" style="width: 30%; border-top: none;">
+
+					<p id="error_search" style="margin: 20px; opacity: 0">error</p>
+
+					<div id="champName_search_div"><h2 id="transition" stle yle="margin: 20px; margin-bottom: -7px;"><none id="summonerName">You</none> - <none id="champName_search">Champion</none></h2></div>
+
+					<br>
+
+					<div class="row">
+						<div class="col-lg-2"></div>
+						<div class="col-lg-4">
+							<h2>Level</h2>
+							<hr>
+							<div class="wrapper">
+								<h2 id="lvl_search" class="circle">0</h2>
+								<div class="tooltip">
+									You are level <none id="lvl_search">0</none> with this champion.
+								</div>
+							</div>
+						</div>
+
+						<div class="col-lg-4">
+							<h2>Points</h2>
+							<hr>
+							<br>
+							<div class="wrapper">
+								<h2 id="points_search">0</h2>
+								<div class="tooltip">
+									<none id="champName_search">champName</none> increases your total mastery points by <none id="points_search">0</none>.
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-lg-2"></div>
+						<div class="col-lg-4">
+							<h2>Points percentage</h2>
+							<hr>
+							<div class="wrapper">
+								<h2 class="circle" style="font-size: 23px; padding-top: 23px;" id="pt_prc_anim"><none id="points_percentage_search">100</none>%</h2>
+								<div class="tooltip">
+									<none id="champName_search">champName</none> makes <none id="points_percentage_search">0</none>% of your total Mastery Points. And you have <b id="totalPoints">0</b> points in total.
+								</div>
+							</div>
+						</div>
+
+						<div class="col-lg-4">
+							<h2>Highest grade</h2>
+							<hr>
+							<div class="wrapper">
+								<h2 id="grade_search" class="circle">0</h2>
+								<div class="tooltip">
+									This is the highest grade you have ever achieved with <none id="champName_search">N/A</none> so far.
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-lg-2"></div>
+						<div class="col-lg-4">
+							<h2>Won a chest</h2>
+							<hr>
+							<div class="wrapper">
+								<h2 class="circle" style="padding-top: 15px;" id="chest_search"><span class="glyphicon glyphicon-remove"></span></h2>
+								<div class="tooltip">
+									This tells you if you have won a hextech chest with this <none id="champName_search">N/A</none>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-lg-4">
+							<h2>Points to next level</h2>
+							<hr>
+							<br><br>
+							<div class="wrapper" style="width: 100%; height: 14px;">
+								<progress id="lvlProg_search" value="50" max="100" style="width: 80%">
+								</progress>
+								<div class="tooltip" style="height: 40px; margin-bottom: 30px;">
+									<none id="pointsNextLvl_search">0</none> / <none id="nextLvlcap_search">0</none>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-lg-2"></div>
+							<div class="col-lg-8">
+								<h2>Not played for</h2>
+								<hr>
+								<div class="wrapper">
+									<h2 id="last_played_search">0</h2>
+									<div class="tooltip">
+										You have not played <none id="champName_search">N/A</none> for this long! What are you waiting for?
+									</div>
+								</div>
+							</div>
+						<div class="col-lg-2"></div>
+					</div>
+				</div>
+			</div>
+		</center>
+
+		<footer>
+
+			<none class="foot_item" style="margin-right: 50px">
+				<a id="jump-up" data-scroll href="#head">
+					<span class="glyphicon glyphicon-chevron-up innerChev"></span>
+				</a>
+			</none>
+
+			<none class="foot_item">Masters of the Rift</none>
+			<none class="foot_item"><a href="about">About</a></none>
+			<none class="foot_item"><a href="disclaimer">Disclaimer</a></none>
+			<none class="foot_item"><a href="https://github.com/rodsn/Masters-of-the-Rift">Github</a></none>
+
+			<br><br>
+
+			<p style="font-size: 10px">Masters Of The Rift isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends.<br> League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.</p>
+
+		</footer>
+
+		<script src="js/request.js"></script>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/smooth-scroll.js"></script>
+		<script src="js/bootstrap.js"></script>
+		<script src="js/parallax.js"></script>
+		<script src="js/smooth.js"></script>
+		<script src="js/index.js"></script>
+		<script src="js/anijs/anijs.js"></script>
+    		<script src="js/anijs/helpers/scrollreveal/anijs-helper-scrollreveal.js"></script>
+    		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="http://github.hubspot.com/odometer/odometer.js"></script>
+
+	</body>
+</html>
